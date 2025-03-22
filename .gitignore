@@ -1,0 +1,35 @@
+# Datasets
+datasets/
+oxford_flowers/
+sample_images/
+
+# Model files
+models/*.pt
+models/*.pth
+
+# Results directory (contains images)
+results/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# OS specific files
+.DS_Store
+Thumbs.db
