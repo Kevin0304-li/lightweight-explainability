@@ -191,11 +191,58 @@ This will:
 
 ## Models Available
 
-- MobileNetV2 (Fast, lightweight)
-- ResNet18 (Balanced performance)
-- ResNet50 (Higher accuracy)
-- VGG16 (Robust but slower)
-- EfficientNet B0 (Efficient architecture)
+This implementation supports various pre-trained CNN models:
+
+1. MobileNetV2 (default)
+2. ResNet18
+3. VGG16
+4. EfficientNet-B0
+
+## Standardized Evaluation Metrics
+
+The project includes a comprehensive evaluation framework to quantify explanation quality using standardized metrics:
+
+### 1. Faithfulness Evaluation
+
+Measures how well the explanation reflects what the model is actually using for prediction:
+
+- **Methodology**: Progressively remove top-activated pixels and measure the drop in prediction confidence
+- **Metrics**: Confidence drop, average drop rate, Area Under the Curve (AUC)
+- **Interpretation**: Higher confidence drop indicates more faithful explanations
+
+### 2. Completeness Evaluation
+
+Assesses how well the simplified explanation captures all important parts of the model's decision:
+
+- **Methodology**: Measure information retention at different simplification thresholds
+- **Metrics**: Retention rate, Area Under the Retention Curve (AUC)
+- **Interpretation**: Higher AUC indicates more complete explanations 
+
+### 3. Sensitivity Analysis
+
+Evaluates how explanations respond to small changes in input:
+
+- **Methodology**: Add controlled noise to inputs and measure explanation stability
+- **Metrics**: Mean correlation between original and perturbed explanations
+- **Interpretation**: Higher correlation indicates more robust explanations
+
+### 4. Ground Truth Correlation
+
+Measures alignment between explanations and known ground truth saliency regions:
+
+- **Methodology**: Compare Grad-CAM heatmaps with ground truth annotations
+- **Metrics**: Intersection over Union (IoU), Pearson correlation, SSIM
+- **Interpretation**: Higher values indicate better alignment with human intuition
+
+### Running Evaluation
+
+To run the standardized evaluation, use:
+
+```bash
+python evaluation_metrics.py --image_dir ./your_images --gt_dir ./ground_truth_masks
+```
+
+This will generate a comprehensive report with visualizations and quantitative metrics.
 
 ## Directory Structure
 
