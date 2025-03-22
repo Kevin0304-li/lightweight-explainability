@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI explainability results with lightweight Grad-CAM visualization">
+    <title>Explainability Results - {{ result.class_name }}</title>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="text-center my-4">
+            <h1>Explainability Results</h1>
+            <p class="lead">Analysis of your uploaded image</p>
+        </header>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-primary">&laquo; Back to Upload</a>
+                    <div>
+                        <span class="badge bg-success rounded-pill">Model: {{ model_name }}</span>
+                        <span class="badge bg-info rounded-pill">Threshold: {{ threshold }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">
+                            <i class="fas fa-tag me-2"></i>
+                            {{ result.class_name }}
+                            <span class="badge bg-primary">{{ "%.1f"|format(result.confidence) }}% confidence</span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Visualization Section -->
+            <div class="col-md-12 mb-4">
+                <div class="card shadow">
+                    <div class="card-header bg-light">
+                        <h3 class="mb-0">Visual Explanation</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4 class="text-center">Original Image</h4>
+                                <div class="text-center">
+                                    <img src="{{ url_for('static', filename='uploads/' + filename) }}" 
+                                        class="img-fluid rounded" alt="Original image" style="max-height: 300px;">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 class="text-center">Standard Grad-CAM</h4>
+                                <div class="text-center">
+                                    <img src="{{ result.baseline_heatmap }}" class="img-fluid rounded" 
+                                        alt="Baseline heatmap" style="max-height: 300px;">
+                                </div>
+                                <div class="text-center mt-2">
+                                    <span class="badge bg-secondary">
+                                        {{ "%.1f"|format(result.active_baseline) }}% active pixels
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 class="text-center">Simplified Grad-CAM</h4>
+                                <div class="text-center">
+                                    <img src="{{ result.simplified_heatmap }}" class="img-fluid rounded" 
+                                        alt="Simplified heatmap" style="max-height: 300px;">
+                                </div>
+                                <div class="text-center mt-2">
+                                    <span class="badge bg-secondary">
+                                        {{ "%.1f"|format(result.active_simplified) }}% active pixels
+                                    </span>
+                                    <span class="badge bg-success">
+                                        {{ "%.1f"|format(100 - result.active_simplified / result.active_baseline * 100) }}% reduction
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Explanation Section -->
+            <div class="col-md-12 mb-4">
+                <div class="card shadow">
+                    <div class="card-header bg-light">
+                        <h3 class="mb-0">Text Explanation</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <h4 class="alert-heading">What the AI sees:</h4>
+                            <p class="explanation-text">
+                                {% for line in result.explanation %}
+                                {{ line }}<br>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics Section -->
+            <div class="col-md-12 mb-4">
+                <div class="card shadow">
+                    <div class="card-header bg-light">
+                        <h3 class="mb-0">Performance Metrics</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="text-center">Processing Times</h4>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Stage</th>
+                                            <th>Time (seconds)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Image Classification</td>
+                                            <td>{{ "%.4f"|format(result.times.prediction) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Baseline Grad-CAM</td>
+                                            <td>{{ "%.4f"|format(result.times.baseline) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Simplification</td>
+                                            <td>{{ "%.4f"|format(result.times.simplified) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Text Explanation</td>
+                                            <td>{{ "%.4f"|format(result.times.explanation) }}</td>
+                                        </tr>
+                                        <tr class="table-primary">
+                                            <td><strong>Total</strong></td>
+                                            <td><strong>{{ "%.4f"|format(result.times.total) }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="text-center">Heatmap Efficiency</h4>
+                                <div class="efficiency-chart">
+                                    <canvas id="pixelChart" width="100%" height="50"></canvas>
+                                </div>
+                                <p class="mt-3">
+                                    <strong>Pixel Efficiency Gain:</strong> Simplified visualization reduces active pixels by 
+                                    <span class="text-success">{{ "%.1f"|format(100 - result.active_simplified / result.active_baseline * 100) }}%</span> 
+                                    while maintaining key focus areas.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Accuracy Impact Section -->
+            <div class="col-md-12 mb-4">
+                <div class="card shadow">
+                    <div class="card-header bg-light">
+                        <h3 class="mb-0">Accuracy Impact Assessment</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert {{ 'alert-success' if result.accuracy_impact.same_prediction else 'alert-warning' }}">
+                                    {% if result.accuracy_impact.same_prediction %}
+                                    <i class="fas fa-check-circle me-2"></i> <strong>Classification preserved:</strong> 
+                                    Simplification did not change the prediction class.
+                                    {% else %}
+                                    <i class="fas fa-exclamation-triangle me-2"></i> <strong>Classification changed:</strong> 
+                                    Simplification altered the prediction, demonstrating the importance of certain image regions.
+                                    {% endif %}
+                                </div>
+                                
+                                <h4 class="text-center mb-3">Quantitative Impact Metrics</h4>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            <th>Baseline Grad-CAM</th>
+                                            <th>Simplified Grad-CAM</th>
+                                            <th>Difference</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Prediction Confidence</td>
+                                            <td>{{ "%.2f"|format(result.accuracy_impact.baseline_confidence) }}%</td>
+                                            <td>{{ "%.2f"|format(result.accuracy_impact.simplified_confidence) }}%</td>
+                                            <td class="{{ 'text-success' if result.accuracy_impact.confidence_change >= 0 else 'text-danger' }}">
+                                                {{ "%+.2f"|format(result.accuracy_impact.confidence_change) }}%
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Memory Usage (est.)</td>
+                                            <td>100%</td>
+                                            <td>{{ "%.2f"|format(100 - result.accuracy_impact.memory_reduction) }}%</td>
+                                            <td class="text-success">
+                                                -{{ "%.2f"|format(result.accuracy_impact.memory_reduction) }}%
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Processing Time</td>
+                                            <td>{{ "%.4f"|format(result.times.baseline) }}s</td>
+                                            <td>{{ "%.4f"|format(result.times.simplified) }}s</td>
+                                            <td class="text-success">
+                                                {{ "%.2f"|format(result.accuracy_impact.speedup_factor) }}x faster
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <div class="mt-4">
+                                    <h5>Interpretation</h5>
+                                    <p>
+                                        <strong>Confidence retention:</strong> 
+                                        {{ "%.1f"|format(result.accuracy_impact.confidence_retention) }}% of original confidence maintained
+                                        {% if result.accuracy_impact.confidence_retention > 95 %}
+                                        <span class="badge bg-success">Excellent</span>
+                                        {% elif result.accuracy_impact.confidence_retention > 85 %}
+                                        <span class="badge bg-primary">Good</span>
+                                        {% elif result.accuracy_impact.confidence_retention > 70 %}
+                                        <span class="badge bg-warning">Moderate</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Significant impact</span>
+                                        {% endif %}
+                                    </p>
+                                    <p>This assessment shows that our lightweight approach to explainability 
+                                    {% if result.accuracy_impact.confidence_retention > 85 and result.accuracy_impact.same_prediction %}
+                                    maintains classification accuracy while significantly reducing computational requirements.
+                                    {% elif result.accuracy_impact.same_prediction %}
+                                    preserves the same classification with some impact on confidence.
+                                    {% else %}
+                                    demonstrates the importance of certain regions that were simplified out.
+                                    {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-3 mb-3">
+        <p class="text-muted">© 2025 Lightweight Explainability Project</p>
+    </footer>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Chart for pixel efficiency
+            var ctx = document.getElementById('pixelChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Baseline Grad-CAM', 'Simplified Grad-CAM'],
+                    datasets: [{
+                        label: 'Active Pixels (%)',
+                        data: [{{ result.active_baseline }}, {{ result.active_simplified }}],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(75, 192, 192, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentage of Image'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

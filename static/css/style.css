@@ -1,0 +1,149 @@
+/* Custom styles for Lightweight Explainability Demo */
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+/* Header styling */
+header h1 {
+    color: #343a40;
+    font-weight: 600;
+}
+
+header .lead {
+    color: #6c757d;
+}
+
+/* Card styling */
+.card {
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0 !important;
+    font-weight: 600;
+}
+
+/* Custom styles for the upload form */
+form .form-control, form .form-select {
+    border-radius: 6px;
+    padding: 10px;
+}
+
+form .btn-primary {
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+/* Results page styling */
+.explanation-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.badge {
+    font-size: 90%;
+    padding: 6px 10px;
+}
+
+.efficiency-chart {
+    height: 250px;
+    padding: 15px;
+}
+
+/* Image containers */
+.img-fluid {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.img-fluid:hover {
+    transform: scale(1.05);
+}
+
+/* Custom button styling */
+.btn-outline-primary {
+    border-width: 2px;
+    font-weight: 500;
+}
+
+/* Footer styling */
+footer {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Alert styling */
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.15);
+    border-color: rgba(13, 202, 240, 0.3);
+    color: #055160;
+}
+
+.alert-info h4 {
+    color: #055160;
+    margin-bottom: 15px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .efficiency-chart {
+        height: 200px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+/* Loader for image processing */
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #0d6efd;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 

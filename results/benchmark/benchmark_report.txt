@@ -1,0 +1,61 @@
+==================================================
+LIGHTWEIGHT EXPLAINABILITY BENCHMARK REPORT
+==================================================
+
+Model: mobilenet_v2
+Number of images: 3
+
+TIME METRICS:
+--------------------------------------------------
+Baseline Grad-CAM:
+  - Total time: 1.4556 seconds
+  - Mean time per image: 0.4852 seconds
+  - Standard deviation: 0.0009 seconds
+
+Simplified Grad-CAM (10%):
+  - Total time: 0.0040 seconds
+  - Mean time per image: 0.0013 seconds
+  - Standard deviation: 0.0005 seconds
+
+Simplified Grad-CAM (5%):
+  - Total time: 0.0020 seconds
+  - Mean time per image: 0.0007 seconds
+  - Standard deviation: 0.0005 seconds
+
+ACTIVE PIXELS METRICS:
+--------------------------------------------------
+Baseline Grad-CAM: 98.25% of image
+Simplified Grad-CAM (10%): 10.00% of image
+Simplified Grad-CAM (5%): 5.00% of image
+
+SPEEDUP METRICS:
+--------------------------------------------------
+Simplified (10%) speedup over baseline: 363.92x
+Simplified (5%) speedup over baseline: 727.92x
+
+INDIVIDUAL IMAGE RESULTS:
+--------------------------------------------------
+Image 1: car.jpg
+  - Baseline time: 0.4839 seconds
+  - Simplified (10%) time: 0.0010 seconds
+  - Simplified (5%) time: 0.0010 seconds
+  - Active pixels (baseline): 98.25%
+  - Active pixels (10%): 10.00%
+  - Active pixels (5%): 5.00%
+
+Image 2: cat.jpg
+  - Baseline time: 0.4859 seconds
+  - Simplified (10%) time: 0.0020 seconds
+  - Simplified (5%) time: 0.0010 seconds
+  - Active pixels (baseline): 98.25%
+  - Active pixels (10%): 10.00%
+  - Active pixels (5%): 5.00%
+
+Image 3: pizza.jpg
+  - Baseline time: 0.4857 seconds
+  - Simplified (10%) time: 0.0010 seconds
+  - Simplified (5%) time: 0.0000 seconds
+  - Active pixels (baseline): 98.25%
+  - Active pixels (10%): 10.00%
+  - Active pixels (5%): 5.00%
+
